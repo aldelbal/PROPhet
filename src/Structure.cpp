@@ -140,7 +140,8 @@ REAL Structure::train_Local(Functional_params *F,REAL totalenergy) {
     
     this->NORM = true;
     //ENERGY = totalenergy - sum;
-    return (totalenergy - sum);
+    //return (totalenergy - sum);
+    return (totalenergy - sum)/this->pos.size();
 }
 
 
@@ -185,7 +186,8 @@ REAL Structure::unravel_Energy(REAL localenergy) {
     }
     //ENERGY = localenergy*denominator + numerator;
     //ENERGY = localenergy + numerator;
-    return localenergy + sum;    
+    //return localenergy + sum;    
+    return localenergy*this->pos.size() + sum;
     
 }
 
@@ -533,7 +535,14 @@ void Structure::Get_Forces(const vector<vector<REAL> > &dE_dG, REAL **f) {
 	}
       }
     }
-    
+    if(!this->FE.empty()) {
+        for (int ii=0; ii<this->ilist.size(); ii++) {
+            int i = this->ilist[ii];
+            for (int dir=0; dir<3; dir++) {
+                f[i][dir] *= this->pos.size();
+            }
+        }
+    }
 }
 
 // ########################################################
